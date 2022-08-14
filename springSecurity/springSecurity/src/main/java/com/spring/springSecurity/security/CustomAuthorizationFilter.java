@@ -24,25 +24,25 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/login")){
-            filterChain.doFilter(request,response);
-        }else {
-            String authorizationHeader=request.getHeader(AUTHORIZATION);
+        if (request.getServletPath().equals("/login")) {
+            filterChain.doFilter(request, response);
+        } else {
+            String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (!authorizationHeader.startsWith("Bearer ")) {
-                  String token  =authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm=Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier  jwtVerifier= JWT.require(algorithm).build();
-                DecodedJWT decodedJWT=jwtVerifier.verify(token);
-                String userName=decodedJWT.getSubject();
+                String token = authorizationHeader.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = jwtVerifier.verify(token);
+                String userName = decodedJWT.getSubject();
                 String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                Collection<SimpleGrantedAuthority> authorities=new ArrayList<>();
-                stream(roles).forEach(role->{
+                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                stream(roles).forEach(role -> {
                     authorities.add(new SimpleGrantedAuthority(role));
                 });
-                UsernamePasswordAuthenticationToken authenticationToken=
-                        new UsernamePasswordAuthenticationToken(userName,null,authorities);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userName, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                   filterChain.doFilter(request,response);
+                filterChain.doFilter(request, response);
             }
         }
     }

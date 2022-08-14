@@ -26,13 +26,13 @@ import java.util.List;
 @Transactional
 @Log4j2
 public class UserServiceImplement implements UserService, UserDetailsService {
-   private final UserRepo userRepo;
-   private final RoleRepo roleRepo;
-   private final PasswordEncoder passwordEncoder;
+    private final UserRepo userRepo;
+    private final RoleRepo roleRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails saveUser(UserDetails user) {
-     user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
@@ -43,9 +43,9 @@ public class UserServiceImplement implements UserService, UserDetailsService {
 
     @Override
     public void addRoleToUser(String userName, String roleName) {
-         UserDetails user= userRepo.findByUserName(userName);
-         Role role= roleRepo.findByName(roleName);
-         user.getRoles().add(role);
+        UserDetails user = userRepo.findByUserName(userName);
+        Role role = roleRepo.findByName(roleName);
+        user.getRoles().add(role);
     }
 
     @Override
@@ -60,12 +60,12 @@ public class UserServiceImplement implements UserService, UserDetailsService {
 
     @Override
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        UserDetails user= userRepo.findByUserName(userName);
-        if(ObjectUtils.isEmpty(user)){
+        UserDetails user = userRepo.findByUserName(userName);
+        if (ObjectUtils.isEmpty(user)) {
             log.info("user not found");
         }
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(s-> authorities.add(new SimpleGrantedAuthority(s.getName())));
-        return new User(user.getUserName(),user.getPassword(), authorities);
-            }
-        }
+        user.getRoles().forEach(s -> authorities.add(new SimpleGrantedAuthority(s.getName())));
+        return new User(user.getUserName(), user.getPassword(), authorities);
+    }
+}

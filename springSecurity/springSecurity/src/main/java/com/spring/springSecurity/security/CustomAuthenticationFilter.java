@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -38,26 +38,26 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-         User user= (User) authResult.getPrincipal();
-        Algorithm algorithm= Algorithm.HMAC256("secret".getBytes());
-        String access_token= JWT.create()
+        User user = (User) authResult.getPrincipal();
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        String access_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+60*60*1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .withIssuer(request.getRequestURI())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
-        String refresh_token= JWT.create()
+        String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+30*60*1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
                 .withIssuer(request.getRequestURI())
                 .sign(algorithm);
-        response.setHeader("access_token",access_token);
-        response.setHeader("refresh_token",refresh_token);
-        Map<String, String> map= new HashMap<>();
-        map.put("access_token",access_token);
-        map.put("refresh_token",refresh_token);
+        response.setHeader("access_token", access_token);
+        response.setHeader("refresh_token", refresh_token);
+        Map<String, String> map = new HashMap<>();
+        map.put("access_token", access_token);
+        map.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(),map);
+        new ObjectMapper().writeValue(response.getOutputStream(), map);
     }
 }

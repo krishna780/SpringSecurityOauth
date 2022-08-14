@@ -16,11 +16,11 @@ public class UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Long id;
-    private  String name;
+    private Long id;
+    private String name;
     private String userName;
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER )
-    private Collection<Role> roles= new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
 }

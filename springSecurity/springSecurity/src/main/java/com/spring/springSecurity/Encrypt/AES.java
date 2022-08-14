@@ -9,15 +9,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class AES {
     SecretKey secretKey;
+
     public void init() throws NoSuchAlgorithmException {
-        KeyGenerator generator= KeyGenerator.getInstance("AES");
+        KeyGenerator generator = KeyGenerator.getInstance("AES");
         generator.init(128);
-        secretKey=generator.generateKey();
+        secretKey = generator.generateKey();
     }
 
     public String encrypt(String message) throws NoSuchPaddingException, NoSuchAlgorithmException {
-        byte[] messByte=message.getBytes();
-        Cipher encryptCiper=Cipher.getInstance("");
+        byte[] messByte = message.getBytes();
+        Cipher encryptCiper = Cipher.getInstance("");
         return "";
     }
 }
